@@ -46,13 +46,10 @@ module Cardano.Api.IPC (
 
     -- *** Tip query
     getLocalChainTip,
-<<<<<<< HEAD
 
     -- *** Helpers
     ConsensusMode(..),
     consensusModeOnly,
-=======
->>>>>>> 41cd48db... Implement new IPC version of getLocalTip
   ) where
 
 import           Prelude
