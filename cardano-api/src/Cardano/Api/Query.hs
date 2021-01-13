@@ -1,6 +1,8 @@
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE EmptyCase #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
@@ -29,6 +31,7 @@ module Cardano.Api.Query (
     ProtocolState(..),
   ) where
 
+import           Data.Aeson (ToJSON)
 import           Data.Bifunctor (bimap)
 import           Data.Map (Map)
 import qualified Data.Map as Map
@@ -160,6 +163,7 @@ newtype LedgerState era
 
 newtype ProtocolState era
   = ProtocolState (Serialised (Shelley.ChainDepState (Ledger.Crypto (ShelleyLedgerEra era))))
+deriving newtype instance IsCardanoEra era => ToJSON (UTxO era)
 
 toShelleyAddrSet :: CardanoEra era
                  -> Set AddressAny
@@ -190,6 +194,10 @@ fromUTxO eraConversion utxo =
     ShelleyBasedEraMary ->
       let Shelley.UTxO sUtxo = utxo
       in UTxO . Map.fromList . map (bimap fromShelleyTxIn (fromTxOut ShelleyBasedEraMary)) $ Map.toList sUtxo
+
+--toUTxO :: ShelleyBasedEra era -> UTxO era -> Shelley.UTxO
+--toUTxO = -- Left off here...perhaps we want to convert to API types instead for printing?
+        -- I.e instead of exposing the underlying ledger specs types, expose the api types.
 
 fromShelleyPoolDistr :: Shelley.PoolDistr StandardCrypto
                      -> Map (Hash StakePoolKey) Rational
