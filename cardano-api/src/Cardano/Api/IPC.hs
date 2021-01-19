@@ -47,8 +47,9 @@ module Cardano.Api.IPC (
     -- *** Tip query
     getLocalChainTip,
 
-    -- *** Create query
-    createQueryInMode,
+    -- *** Helpers
+    ConsensusMode(..),
+    consensusModeOnly,
   ) where
 
 import           Prelude
